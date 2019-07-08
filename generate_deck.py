@@ -24,13 +24,37 @@ You have {{Hand}} {{Position}}. {{Situation}}.
 
 <script>
 
-var all_suits = ['hearts', 'clubs', 'diamonds', 'spades'];
+var card_mapping = {
+    'A': 0,
+    '2': 1,
+    '3': 2,
+    '4': 3,
+    '5': 4,
+    '6': 5,
+    '7': 6,
+    '8': 7,
+    '9': 8,
+    'T': 9,
+    'J': 10,
+    'Q': 11,
+    'K': 12,
+};
 
-var suit1_index = Math.floor(Math.random() * 4);
+// Anki renders the front and back of a card independently. To avoid the suits
+// changing when you click "show answer", we use the current time to generate
+// the suits rather than generating a random number. The suits rotate every 10
+// minutes.
+var today = new Date();
+var current_time = Math.floor(today.getTime() / (1000 * 60 * 10));
+var card1_int = card_mapping["{{Hand}}".charAt(0)];
+var card2_int = card_mapping["{{Hand}}".charAt(1)];
+var rand = (current_time + card1_int * 13 + card2_int) % 12;
+
+var suit1_index = rand % 4;
 var suit1 = all_suits[suit1_index];
 
 all_suits.splice(suit1_index, 1);
-var suit2 = all_suits[Math.floor(Math.random() * 3)];
+var suit2 = all_suits[Math.floor(rand / 4)];
 
 if ("{{Hand}}".endsWith("s"))
   suit2 = suit1;
